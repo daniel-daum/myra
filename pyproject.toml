@@ -1,6 +1,6 @@
 
 [project]
-name = "sola"
+name = "myra"
 version = "0.1.0"
 description = "A library to count the colors in an image."
 authors = [
@@ -14,9 +14,9 @@ readme = "README.md"
 license = {text = "MIT"}
 
 [tool.pdm.scripts]
-ruff = "ruff ./sola"
-isort = "isort ./sola"
-black = "black ./sola"
+ruff = "ruff ./myra"
+isort = "isort ./myra"
+black = "black ./myra"
 format = {composite = ["isort", "black", "ruff"]}
 
 [build-system]
