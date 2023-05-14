@@ -1,0 +1,34 @@
+
+[project]
+name = "sola"
+version = "0.1.0"
+description = "A library to count the colors in an image."
+authors = [
+    {name = "daniel daum", email = "daniel_daum@outlook.com"},
+]
+dependencies = [
+    "pillow>=9.5.0",
+]
+requires-python = ">=3.10"
+readme = "README.md"
+license = {text = "MIT"}
+
+[tool.pdm.scripts]
+ruff = "ruff ./sola"
+isort = "isort ./sola"
+black = "black ./sola"
+format = {composite = ["isort", "black", "ruff"]}
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "pytest>=7.3.1",
+    "pytest-cov>=4.0.0",
+    "pytest-sugar>=0.9.7",
+    "black>=23.3.0",
+    "isort>=5.12.0",
+    "ruff>=0.0.267",
+]
