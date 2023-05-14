@@ -1,7 +1,7 @@
 
 [project]
 name = "myra"
-version = "0.1.0"
+version = "0.1.1"
 description = "A library to count the colors in an image."
 authors = [
     {name = "daniel daum", email = "daniel_daum@outlook.com"},
