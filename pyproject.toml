@@ -8,16 +8,13 @@ authors = [
 ]
 dependencies = [
     "pillow>=9.5.0",
+    "polars>=0.17.13",
+    "isort>=5.12.0",
 ]
 requires-python = ">=3.10"
 readme = "README.md"
 license = {text = "MIT"}
 
-[tool.pdm.scripts]
-ruff = "ruff ./myra"
-isort = "isort ./myra"
-black = "black ./myra"
-format = {composite = ["isort", "black", "ruff"]}
 
 [build-system]
 requires = ["pdm-backend"]
@@ -31,4 +28,5 @@ dev = [
     "black>=23.3.0",
     "isort>=5.12.0",
     "ruff>=0.0.267",
+    "pandas>=2.0.1",
 ]

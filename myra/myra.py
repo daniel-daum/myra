@@ -1,73 +1,134 @@
-from PIL import Image
-import time
+from myra.scan import Scan
+import os
+import uuid
+import csv
+
 
 class Myra:
-    """Overall class to manage image scans."""
+		"""Overall class to manage image scans."""
 
-    def __init__(self):
-        """
-        Initalize the Myra image scan class.
-        """
+		def __init__(self):
+			"""Initalizes the Myra image scan class."""
 
-    def scan(self, image_path:str) -> dict[tuple,int]:
-      """
-      Scans every pixel and counts the occurance of each color in the image.
+			self.temp_folder:str = None
+			
 
-      image_path: Absolute or relaitve filepath to the image.
+		def scan(self, image_path:str) -> Scan:
+			"""
+			Scans every pixel in an image and counts the occurance of each color.
 
-      Returns a dictionary with count data. 
-      """
+			`image_path`: Absolute or relative filepath to the image.
+
+			`to_disk`: Outputs results to disk as a csv in a new folder.
+
+			`returns`: A dictionary with count data. 
+			"""
+
+			if not isinstance(image_path, str):
+
+				error:str = f"ERROR: The provided file path '{image_path}' has an invalid type: {type(image_path)}. Please provide an image path with a type: {str}."
+				
+				print(error)
+
+				return error
+
+			elif len(image_path) == 0:
+						
+						error:str = f"ERROR: The file path has an length: {len(image_path)}. Please provide a string filepath with a length > 1."
+
+						print(error)
+
+						return error
+			
+			try:
+						# Initalize scan class that stores image rgb data.
+						scan = Scan(image_path)
+
+			except FileNotFoundError:
+				return f"No such file or directory: {image_path}. Is the image file in the correct directory?"
+
+			return scan
+		
+
+		def to_csv(self, file_name:str, scan:Scan) -> None:
+			"""
+			Generates a csv for the provided image scan.
+
+			Outputs the csv in the current root directory.
+
+			`file_name`: The name of the to-be-generated csv file.
+
+			`scan`: The myra scan object to be output to csv.
+			"""
+
+			with open(file_name, "w", newline='') as csv_file:
+				
+				csv_writer = csv.writer(csv_file, delimiter=',')
+				
+				csv_writer.writerow(['rgb_color', 'pixel_count'])
+				
+				for rgb, count in scan.rgb_count.items():
+					
+					csv_writer.writerow([rgb, count])
 
 
-      if not isinstance(image_path, str):
-            
-            print(f"The file path '{image_path}' has an invalid type: {type(image_path)}. Please provide a {str}.")
 
-            return
+		
+		def __generate_temp_folder(self) -> str:
+			"""
+			Generates a new folder in the current directory with a random filename.
 
-      elif len(image_path) == 0:
+			Returns the file directory name.
+			"""
 
-            print(f"The file path has an length: {len(image_path)}. Please provide a string filepath with a length > 1.")
+			folder_name:str = f"myra_temp_{str(uuid.uuid4())}"
 
-            return
-      
-      print(f"Starting scan for image: {image_path}")
-      start_time:float = time.time()
+			while True:
+						current_directory:str = os.getcwd()
+						
+						final_directory:str = os.path.join(current_directory, f'{folder_name}')
 
-      try:
+						
+						if not os.path.exists(final_directory):
 
-            colors:dict[tuple,int] = {}
+									os.makedirs(final_directory)
 
-            # Load the image and grab pixel data.
-            image = Image.open(image_path)
+									break
 
-            pixels = image.load()
-            
-            print(f"Image size: {image.size}")
-            # Loop through the pixels, store the rgb values, and increment a count
-            for x in range(image.size[0]):
-                  for y in range(image.size[1]):
-                        
-                        rgba:tuple[int] = pixels[x,y]
+			self.temp_folder = final_directory
 
-                        colors[rgba[:3]] = 1 + colors.get(rgba[:3], 0)
+			return 
 
-      except FileNotFoundError:
-            print(f"No such file or directory: {image_path}. Is the file in the correct directory?")
+		
+		def __generate_csv(self, color_data:dict[tuple,int]) -> None:
+			"""
+			Generates a csv for the provided color data.
 
-            return
+			Outputs in a generated folder located in the projects root directory.
 
-      end_time:float = time.time()
-      print(f"Scan complete. Time elapsed: {end_time - start_time}")
+			Returns nothing. 
+			"""
+
+			out_file:str = self.temp_folder + "/myra_scan.csv"
+
+			with open(out_file, "w", newline='') as csv_file:
+
+						csv_writer = csv.writer(csv_file, delimiter=',')
+
+						# Add headers
+						csv_writer.writerow(['rgb_color', 'pixel_count'])
+
+						for rgb, count in color_data.items():
+
+									csv_writer.writerow([rgb, count])
 
 
-      return colors
-
-    
-
-    
+			
 
 
-    
+		
+
+
+		
 
 
